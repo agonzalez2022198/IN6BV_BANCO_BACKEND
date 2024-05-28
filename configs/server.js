@@ -7,7 +7,7 @@ import morgan from 'morgan';
 import { dbConnection } from './mongo.js';
 import bcryptjs from 'bcryptjs';
 import multer from 'multer';
-
+import accountRoutes from '../src/account/account.routes.js'
 
 class Server {
     constructor(){
@@ -20,7 +20,8 @@ class Server {
         this.middlewares();
         this.conectarDB();
         this.routes();
-        this.createUser();
+        this.accountPath = 'kinalbank/v1/account'
+        //this.createUser();
     }
 
     async conectarDB() {
@@ -38,7 +39,7 @@ class Server {
 
 
     routes(){
-
+        this.app.use(this.accountPath, accountRoutes);
     }
 
 

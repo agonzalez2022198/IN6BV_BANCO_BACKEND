@@ -5,7 +5,7 @@ import User from './user.model.js';
 
 export const postUser = async (req, res) => {
     const {
-        name, nickName, userName, password, DPI, 
+        name, nickName, userName, password, DPI,
         location, celular, correo, monthlyIncome
     } = req.body;
 
@@ -14,8 +14,8 @@ export const postUser = async (req, res) => {
         location, celular, correo, monthlyIncome
     });
 
-    const salt = bcryptjs.getSaltSync();
-    usuario.password = bcryptjs.hashSync(password, salt);
+    const salt = bcryptjs.genSaltSync();
+    user.password = bcryptjs.hashSync(password, salt);
 
     await user.save();
 

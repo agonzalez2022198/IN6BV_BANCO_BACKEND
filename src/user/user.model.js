@@ -1,4 +1,4 @@
-import mongoose, {Scheema} from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
 
 const  UserSchema = mongoose.Schema({
     name: {
@@ -57,7 +57,8 @@ const  UserSchema = mongoose.Schema({
     },
 
     searches: {
-        type: mongoose.Types.ObjectId()
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'searches'
     },
 
     state: {

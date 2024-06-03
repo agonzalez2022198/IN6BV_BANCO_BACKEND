@@ -14,14 +14,19 @@ export const postUser = async (req, res) => {
         location, celular, correo, monthlyIncome
     });
 
-    const salt = bcryptjs.getSaltSync();
-    usuario.password = bcryptjs.hashSync(password, salt);
+    try {
+        const salt = bcryptjs.genSaltSync();  // Cambiado a genSaltSync
+        user.password = bcryptjs.hashSync(password, salt);
 
-    await user.save();
+        await user.save();
 
-    res.status(200).json({
-        user
-    });
-
-    
+        res.status(200).json({
+            user
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error saving user',
+            error
+        });
+    }
 }

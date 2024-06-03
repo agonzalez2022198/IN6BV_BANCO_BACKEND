@@ -4,29 +4,26 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { dbConnection } from './mongo.js';
-import bcryptjs from 'bcryptjs';
 import multer from 'multer';
-
+import { dbConnection } from './mongo.js';
+import productRoutes from '../src/products/products.routes.js';  // Importa las rutas de productos
 
 class Server {
-    constructor(){
+    constructor() {
         this.app = express();
         this.port = process.env.PORT;
+        this.productPath = '/Bank/v1/products';  // Define la ruta base para productos
 
-
-        this.upload = multer({ dest: 'uploads/'})
+        this.upload = multer({ dest: 'uploads/' });
 
         this.middlewares();
         this.conectarDB();
         this.routes();
-        this.createUser();
     }
 
     async conectarDB() {
         await dbConnection();
     }
-
 
     middlewares() {
         this.app.use(express.urlencoded({ extended: false }));
@@ -36,20 +33,15 @@ class Server {
         this.app.use(morgan('dev'));
     }
 
-
-    routes(){
-
+    routes() {
+        this.app.use(this.productPath, productRoutes);  // Usa las rutas de productos
     }
-
 
     listen() {
         this.app.listen(this.port, () => {
-            console.log('Server running on port:', this.port);
+            console.log('Server running on port', this.port);
         });
     }
-
-
 }
-
 
 export default Server;

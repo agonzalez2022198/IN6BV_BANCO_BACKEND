@@ -1,4 +1,4 @@
-import { response, request } from 'express';
+/*import { response, request } from 'express';
 import bcryptjs from 'bcryptjs';
 import User from './user.model.js';
 
@@ -24,4 +24,4 @@ export const postUser = async (req, res) => {
     });
 
     
-}
+}*/

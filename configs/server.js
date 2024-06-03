@@ -7,27 +7,25 @@ import morgan from 'morgan';
 import { dbConnection } from './mongo.js';
 import bcryptjs from 'bcryptjs';
 import multer from 'multer';
-import accountRoutes from '../src/account/account.routes.js'
+import accountRoutes from '../src/account/account.routes.js';
 
 class Server {
-    constructor(){
+    constructor() {
         this.app = express();
         this.port = process.env.PORT;
+        this.accountPath = '/kinalbank/v1/account';  // Mover esta línea aquí
 
-
-        this.upload = multer({ dest: 'uploads/'})
+        this.upload = multer({ dest: 'uploads/' });
 
         this.middlewares();
         this.conectarDB();
         this.routes();
-        this.accountPath = 'kinalbank/v1/account'
-        //this.createUser();
+        // this.createUser();
     }
 
     async conectarDB() {
         await dbConnection();
     }
-
 
     middlewares() {
         this.app.use(express.urlencoded({ extended: false }));
@@ -37,20 +35,15 @@ class Server {
         this.app.use(morgan('dev'));
     }
 
-
-    routes(){
+    routes() {
         this.app.use(this.accountPath, accountRoutes);
     }
-
 
     listen() {
         this.app.listen(this.port, () => {
             console.log('Server running on port:', this.port);
         });
     }
-
-
 }
-
 
 export default Server;

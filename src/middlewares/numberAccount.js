@@ -1,10 +1,12 @@
 import crypto from 'crypto'
 
+
 export const generateAccountNumber = function(next) {
     if (!this.isNew) {
         return next();
     }
 
-    this.accountNumber = crypto.randomBytes(6).toString('hex');
+    const randomNumber = crypto.randomBytes(3).readUIntBE(0, 3);
+    this.accountNumber = randomNumber.toString().padStart(9, '0');
     next();
 };

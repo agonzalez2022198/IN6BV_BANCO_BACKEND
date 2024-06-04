@@ -4,7 +4,7 @@ import { generateAccountNumber } from "../middlewares/numberAccount.js";
 const AccountSchema = new mongoose.Schema({
     accountNumber: {
         type: String,
-        required: true,
+        //required: true,
         unique: true
     },
     user: {

@@ -9,6 +9,7 @@ import bcryptjs from 'bcryptjs';
 import multer from 'multer';
 import accountRoutes from '../src/account/account.routes.js';
 import userRoutes from "../src/user/user.routes.js";
+import typeAccountRoutes from '../src/typeAccount/typeAccount.routes.js';
 
 class Server {
     constructor() {
@@ -16,7 +17,7 @@ class Server {
         this.port = process.env.PORT;
         this.accountPath = '/kinalbank/v1/account';
         this.userPath = '/kinalbank/v1/user';  
-
+        this.typeAccountPath = '/kinalbank/v1/typeAccount'
         this.upload = multer({ dest: 'uploads/' });
 
         this.middlewares();
@@ -94,6 +95,7 @@ class Server {
     routes() {
         this.app.use(this.accountPath, accountRoutes);
         this.app.use(this.userPath, userRoutes);
+        this.app.use(this.typeAccountPath, typeAccountRoutes)
     }
 
     listen() {

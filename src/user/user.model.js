@@ -1,4 +1,4 @@
-import mongoose, {Schema} from 'mongoose';
+import mongoose, {STATES, Schema} from 'mongoose';
 
 const  UserSchema = mongoose.Schema({
     name: {
@@ -46,6 +46,11 @@ const  UserSchema = mongoose.Schema({
         require: true
     },
 
+    state: {
+        type: Boolean,
+        default: true
+    },
+
     monthlyIncome: {
         type: Number,
         require: true
@@ -59,12 +64,8 @@ const  UserSchema = mongoose.Schema({
     searches: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'searches'
-    },
-
-    state: {
-        type: Boolean,
-        defaut: true
     }
+
 
 });
 

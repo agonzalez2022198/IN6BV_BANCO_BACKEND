@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { check } from "express-validator";
 
-import {postUser} from "./user.controller.js"
+import {postUser, getUsers, getUserById, putUser, deleteUser} from "./user.controller.js"
 
 import {existeUsuarioById} from "../helpers/db-validator.js";
 
@@ -29,6 +29,38 @@ router.post(
     ],
     postUser
 );
+
+router.get("/", getUsers);
+
+router.get(
+  "/:id",
+  [
+    check("id", "This is not a valid id").isMongoId(),
+  ],
+  getUserById
+);
+
+router.put(
+    "/:id",
+    [
+      check("id", "No es un ID válido").isMongoId(),
+      check("id").custom(existeUsuarioById),
+      validarCampos,
+    ],
+    putUser
+);
+
+router.delete(
+    "/:id",
+    [
+      //validarJWT,
+      //tieneRole("ADMIN_ROLE", "VENTAS_ROLE"),
+      check("id", "No es un ID válido").isMongoId(),
+      check("id").custom(existeUsuarioById),
+      validarCampos,
+    ],
+    deleteUser
+  );
 
 
 export default router;

@@ -6,13 +6,15 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import multer from 'multer';
 import { dbConnection } from './mongo.js';
-import productRoutes from '../src/products/products.routes.js';  // Importa las rutas de productos
+import productRoutes from '../src/products/products.routes.js';  
+import servicesRoutes from '../src/services/services.routes.js';  
 
 class Server {
     constructor() {
         this.app = express();
         this.port = process.env.PORT;
         this.productPath = '/Bank/v1/products';  // Define la ruta base para productos
+        this.servicesPath = '/Bank/v1/services';  // Define la ruta base para servicios
 
         this.upload = multer({ dest: 'uploads/' });
 
@@ -35,6 +37,7 @@ class Server {
 
     routes() {
         this.app.use(this.productPath, productRoutes);  // Usa las rutas de productos
+        this.app.use(this.servicesPath, servicesRoutes); // Usa las rutas de servicios
     }
 
     listen() {

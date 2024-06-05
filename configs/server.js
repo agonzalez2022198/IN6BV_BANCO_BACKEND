@@ -10,6 +10,7 @@ import multer from 'multer';
 import accountRoutes from '../src/account/account.routes.js';
 import userRoutes from "../src/user/user.routes.js";
 import typeAccountRoutes from '../src/typeAccount/typeAccount.routes.js';
+import authRoutes from '../src/auth/auth.routes.js';
 
 class Server {
     constructor() {
@@ -18,6 +19,7 @@ class Server {
         this.accountPath = '/kinalbank/v1/account';
         this.userPath = '/kinalbank/v1/user';  
         this.typeAccountPath = '/kinalbank/v1/typeAccount'
+        this.authPath = '/kinalbank/v1/auth'
         this.upload = multer({ dest: 'uploads/' });
 
         this.middlewares();
@@ -95,7 +97,8 @@ class Server {
     routes() {
         this.app.use(this.accountPath, accountRoutes);
         this.app.use(this.userPath, userRoutes);
-        this.app.use(this.typeAccountPath, typeAccountRoutes)
+        this.app.use(this.typeAccountPath, typeAccountRoutes);
+        this.app.use(this.authPath, authRoutes);
     }
 
     listen() {

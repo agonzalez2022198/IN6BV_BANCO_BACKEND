@@ -1,5 +1,5 @@
 'use strict';
-
+import User from '../src/user/user.model.js'
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -17,7 +17,7 @@ class Server {
         this.app = express();
         this.port = process.env.PORT;
         this.accountPath = '/kinalbank/v1/account';
-        this.userPath = '/kinalbank/v1/user';  
+        this.userPath = '/kinalbank/v1/user';
         this.typeAccountPath = '/kinalbank/v1/typeAccount'
         this.authPath = '/kinalbank/v1/auth'
         this.upload = multer({ dest: 'uploads/' });
@@ -30,60 +30,27 @@ class Server {
 
     async conectarDB() {
         await dbConnection();
+
+        const lengthUsers = await User.countDocuments();
+        if (lengthUsers > 0) return;
+        const salt = bcryptjs.genSaltSync();
+        const password = bcryptjs.hashSync('123456', salt);
+
+        const adminUser = new User({
+            name: "ADMIN",
+            userName: "adminUserName",
+            password: password,
+            role: "ADMIN_ROLE",
+            DPI: "1234567891012",
+            celular: "123456789",
+            correo: "admin@gmail.com",
+        });
+
+        await adminUser.save();
+        console.log(adminUser);
     }
 
-    async createUser() {
-        const existeUser = await User.findOne({ email: 'admin@gmail.com' });
 
-        if (!existeUser) {
-            const userAdminCreate = {
-                name: "Pedro",
-                nickName: "Motta",
-                userName: "pMotta",
-                password: "123456",
-                DPI: "2334565678123",
-                location: "11 calle 22-34 zona 13",
-                celular: "34546578",
-                correo: "pmotta@gmail.com",
-                monthlyIncome: "1200",
-                USER_ROLE: "ADMIN_ROLE"
-            };
-
-            const saltAdmin = bcryptjs.genSaltSync();
-            userAdminCreate.password = bcryptjs.hashSync(userAdminCreate.password, saltAdmin);
-
-            const userAdmin = new User(userAdminCreate);
-            await userAdmin.save();
-
-            /*const userHotelCreate = {
-                email: 'hotel@gmail.com',
-                password: '123456',
-                name: "hotel default",
-                lastName: "lastname hotel default",
-                role: 'HOTEL_ROLE',
-            };
-
-            const saltHotel = bcryptjs.genSaltSync();
-            userHotelCreate.password = bcryptjs.hashSync(userHotelCreate.password, saltHotel);
-
-            const userHotel = new User(userHotelCreate);
-            await userHotel.save();
-
-            const userCreate = {
-                email: 'user@gmail.com',
-                password: '123456',
-                name: "user default",
-                lastName: "user lastname",
-                role: 'USER_ROLE',
-            };
-
-            const salt = bcryptjs.genSaltSync();
-            userCreate.password = bcryptjs.hashSync(userCreate.password, salt);
-
-            const user = new User(userCreate);
-            await user.save();*/
-        }
-    }
 
 
     middlewares() {

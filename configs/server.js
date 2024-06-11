@@ -25,29 +25,12 @@ class Server {
         this.middlewares();
         this.conectarDB();
         this.routes();
-        // this.createUser();
+        this.createUser();
     }
 
     async conectarDB() {
         await dbConnection();
 
-        const lengthUsers = await User.countDocuments();
-        if (lengthUsers > 0) return;
-        const salt = bcryptjs.genSaltSync();
-        const password = bcryptjs.hashSync('123456', salt);
-
-        const adminUser = new User({
-            name: "ADMIN",
-            userName: "adminUserName",
-            password: password,
-            role: "ADMIN_ROLE",
-            DPI: "1234567891012",
-            celular: "123456789",
-            correo: "admin@gmail.com",
-        });
-
-        await adminUser.save();
-        console.log(adminUser);
     }
 
 
@@ -60,6 +43,33 @@ class Server {
         this.app.use(helmet());
         this.app.use(morgan('dev'));
     }
+    async createUser() {
+        const existeUser = await User.findOne({ email: 'admin@gmail.com' });
+
+        if (!existeUser) {
+            const userAdminCreate = {
+                name: "Pedro",
+                nickName: "Motta",
+                userName: "pMotta",
+                password: "123456",
+                DPI: "2334565678123",
+                location: "11 calle 22-34 zona 13",
+                celular: "34546578",
+                correo: "pmotta@gmail.com",
+                monthlyIncome: "1200",
+                USER_ROLE: "ADMIN_ROLE"
+            };
+
+            const saltAdmin = bcryptjs.genSaltSync();
+            userAdminCreate.password = bcryptjs.hashSync(userAdminCreate.password, saltAdmin);
+
+            const userAdmin = new User(userAdminCreate);
+            await userAdmin.save();
+            console.log(userAdmin);
+        
+        }
+    }
+    
 
     routes() {
         this.app.use(this.accountPath, accountRoutes);

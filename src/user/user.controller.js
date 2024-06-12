@@ -1,7 +1,53 @@
-import { response, request } from 'express';
+import { response } from 'express';
 import bcryptjs from 'bcryptjs';
 import User from './user.model.js';
+import axios from 'axios';
+import nodemailer from 'nodemailer';
+import { google } from 'googleapis'; // Importa google de google-auth-library
+import dotenv from 'dotenv';
 
+dotenv.config();
+
+// Configuración de OAuth2
+const oauth2Client = new google.auth.OAuth2(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  process.env.REDIRECT_URI
+);
+
+oauth2Client.setCredentials({
+  refresh_token: process.env.REFRESH_TOKEN
+});
+
+const accessToken = oauth2Client.getAccessToken();
+
+// Configuración de nodemailer con OAuth2
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    type: 'OAuth2',
+    user: process.env.EMAIL,
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    refreshToken: process.env.REFRESH_TOKEN,
+    accessToken: accessToken
+  }
+});
+
+// Función para verificar el correo electrónico utilizando ZeroBounce
+const verifyEmail = async (email) => {
+  const apiKey = process.env.ZEROBOUNCE_API_KEY;
+  const url = `https://api.zerobounce.net/v2/validate?api_key=${apiKey}&email=${email}`;
+
+  try {
+    const response = await axios.get(url);
+    console.log('Respuesta de la API de ZeroBounce:', response.data);
+    return response.data.status === 'valid';
+  } catch (error) {
+    console.error('Error al verificar el correo electrónico:', error.message);
+    return false;
+  }
+};
 
 export const postUser = async (req, res) => {
     const {
@@ -9,8 +55,28 @@ export const postUser = async (req, res) => {
         location, celular, correo, monthlyIncome
     } = req.body;
 
+    // Verificar el correo electrónico
+    const isEmailValid = await verifyEmail(correo);
+    if (!isEmailValid) {
+        return res.status(400).json({
+            msg: 'Correo electrónico no válido o no existe.'
+        });
+    }
+
+    let uniqueCode;
+    let codeExists = true;
+
+    // Generar un código de 4 dígitos y verificar que no exista
+    while (codeExists) {
+        uniqueCode = Math.floor(1000 + Math.random() * 9000); // Genera un código de 4 dígitos
+        const existingUser = await User.findOne({ code: uniqueCode });
+        if (!existingUser) {
+            codeExists = false;
+        }
+    }
+
     const user = new User({
-        name, nickName, userName, password, DPI, 
+        name, nickName, userName, password, code: uniqueCode, DPI,
         location, celular, correo, monthlyIncome
     });
 
@@ -19,12 +85,37 @@ export const postUser = async (req, res) => {
 
     await user.save();
 
+    // Enviar correo electrónico con los datos de la cuenta
+    const mailOptions = {
+        from: process.env.EMAIL,
+        to: correo,
+        subject: 'Datos de tu nueva cuenta bancaria',
+        text: `Hola ${name},
+
+Tu cuenta bancaria ha sido creada exitosamente. Aquí están los detalles de tu cuenta:
+
+Código de la cuenta: ${user.code}
+Nombre de usuario: ${userName}
+DPI: ${DPI}
+
+Gracias por confiar en nosotros.
+
+Atentamente,
+Tu Banco`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log('Error al enviar el correo:', error);
+        } else {
+            console.log('Correo enviado:', info.response);
+        }
+    });
+
     res.status(200).json({
         user
     });
-
-    
-}
+};
 
 
 export const getUsers = async (req, res = response) => {
@@ -46,9 +137,9 @@ export const getUsers = async (req, res = response) => {
 
 
 export const getUserById = async (req, res) => {
-    const {id} = req.body;
-    const user = await User.findOne({_id: id});
-    
+    const { id } = req.body;
+    const user = await User.findOne({ _id: id });
+
     res.status(200).json({
         user
     })
@@ -65,7 +156,7 @@ export const putUser = async (req, res = response) => {
 
     await User.findByIdAndUpdate(id, resto);
 
-    const user = await User.findOne({_id: id});
+    const user = await User.findOne({ _id: id });
 
     res.status(200).json({
         msg: 'Updated user!!',

@@ -21,6 +21,11 @@ const  UserSchema = mongoose.Schema({
         require: true
     },
 
+    code: {
+        type: String,
+        require: true
+    },
+
     USER_ROLE: {
         type: String,
         default: 'USER_ROLE'

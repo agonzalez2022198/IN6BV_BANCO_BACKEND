@@ -7,13 +7,14 @@ import morgan from 'morgan';
 import { dbConnection } from './mongo.js';
 import bcryptjs from 'bcryptjs';
 import multer from 'multer';
+import depositoRoutes from '../src/deposito/deposito.route.js';
 
 
 class Server {
     constructor(){
         this.app = express();
         this.port = process.env.PORT;
-
+        this.depositoPath = '/Bank/v1/deposito';
 
         this.upload = multer({ dest: 'uploads/'})
 
@@ -38,7 +39,7 @@ class Server {
 
 
     routes(){
-
+        this.app.use(this.depositoPath, depositoRoutes); 
     }
 
 

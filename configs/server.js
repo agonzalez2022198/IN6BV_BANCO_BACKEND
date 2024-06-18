@@ -1,5 +1,3 @@
-'use strict';
-
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -42,7 +40,7 @@ class Server {
     }
 
     async createUser() {
-        const existeUser = await User.findOne({ email: 'admin@gmail.com' });
+        const existeUser = await User.findOne({ correo: 'pmotta@gmail.com' });
 
         if (!existeUser) {
             const userAdminCreate = {
@@ -55,7 +53,7 @@ class Server {
                 celular: "34546578",
                 correo: "pmotta@gmail.com",
                 monthlyIncome: "1200",
-                USER_ROLE: "ADMIN_ROLE"
+                role: "ADMIN_ROLE"
             };
 
             const saltAdmin = bcryptjs.genSaltSync();
@@ -63,34 +61,6 @@ class Server {
 
             const userAdmin = new User(userAdminCreate);
             await userAdmin.save();
-
-            /*const userHotelCreate = {
-                email: 'hotel@gmail.com',
-                password: '123456',
-                name: "hotel default",
-                lastName: "lastname hotel default",
-                role: 'HOTEL_ROLE',
-            };
-
-            const saltHotel = bcryptjs.genSaltSync();
-            userHotelCreate.password = bcryptjs.hashSync(userHotelCreate.password, saltHotel);
-
-            const userHotel = new User(userHotelCreate);
-            await userHotel.save();
-
-            const userCreate = {
-                email: 'user@gmail.com',
-                password: '123456',
-                name: "user default",
-                lastName: "user lastname",
-                role: 'USER_ROLE',
-            };
-
-            const salt = bcryptjs.genSaltSync();
-            userCreate.password = bcryptjs.hashSync(userCreate.password, salt);
-
-            const user = new User(userCreate);
-            await user.save();*/
         }
     }
 

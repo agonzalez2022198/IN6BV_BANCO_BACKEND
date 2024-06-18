@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createDeposito, getDepositos, getDepositoById, updateDeposito, deleteDeposito } from '../controllers/depositoController.js';
+import { createDeposito, getDepositos, getDepositoById, updateDeposito, deleteDeposito } from '../deposito/deposito.controller.js';
 import { verifyToken } from '../middleware/auth.js';
 
 const router = Router();

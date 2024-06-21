@@ -38,12 +38,12 @@ export const postUser = async (req, res) => {
     } = req.body;
 
     // Verificar el correo electrónico
-    const isEmailValid = await verifyEmail(correo);
+    /*const isEmailValid = await verifyEmail(correo);
     if (!isEmailValid) {
         return res.status(400).json({
             msg: 'Correo electrónico no válido o no existe.'
         });
-    }
+    }*/
 
     let uniqueCode;
     let codeExists = true;

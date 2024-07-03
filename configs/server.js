@@ -16,7 +16,7 @@ class Server {
         this.port = process.env.PORT;
 
         this.userPath = '/bank/v1/user';
-        this.authPath = '/kinalbank/v1/auth';
+        this.authPath = '/bank/v1/auth';
 
         this.upload = multer({ dest: 'uploads/' })
 

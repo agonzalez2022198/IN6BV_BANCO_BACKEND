@@ -64,6 +64,7 @@ class Server {
 
             const userAdmin = new User(userAdminCreate);
             await userAdmin.save();
+            console.log(userAdmin)
         }
     }
 

@@ -2,18 +2,18 @@ import Deposito from '../deposito/deposito.model.js';
 import Account from '../account/account.model.js';
 
 export const createDeposito = async (req, res) => {
-    const { account, accountRecibe, monto } = req.body;
+    const { accountt, accountRecibet, monto } = req.body;
 
     try {
         if (monto > 3000) {
             return res.status(400).json({ error: 'La cantidad a transferir no puede ser mayor a 3000.' });
         }
 
-        const accounts = await Account.findOne(account);
+        const accounts = await Account.findOne({accountNumber: accountt});
         if(!accounts){
             return res.status(400).json({ error: 'Esa cuenta no existe' });
         }
-        const accountRecibs = await Account.findOne(accountRecibe);
+        const accountRecibs = await Account.findOne({accountNumber: accountRecibet});
 
         if (!accountRecibs) {
             return res.status(404).json({ error: 'Cuenta no encontrada.' });
@@ -21,27 +21,27 @@ export const createDeposito = async (req, res) => {
 
 
 
-        if (account.money < monto) {
+        if (accounts.money < monto) {
             return res.status(400).json({ error: 'Saldo insuficiente para realizar la transferencia.' });
         }
 
-        account.money -= monto;
-        accountRecibe.money += monto;
+        accounts.money -= monto;
+        accountRecibs.money += monto;
 
-        await account.save();
-        await accountRecibe.save();
+        const idUser = accounts.user;
+
+        await accounts.save();
+        await accountRecibs.save();
 
         const deposito = new Deposito({
-            account: user.account,
+            account: accountt,
             monto,
-            revertido: false,
             idUser,
-            idUserReceive
+            accountRecibe: accountRecibet
         });
 
         const savedDeposito = await deposito.save();
 
-        // Enviar respuesta con el depósito creado
         res.status(200).json(savedDeposito);
     } catch (error) {
         res.status(500).json({ error: error.message });

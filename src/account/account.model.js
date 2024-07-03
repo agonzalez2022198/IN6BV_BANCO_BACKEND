@@ -23,7 +23,8 @@ const AccountSchema = new mongoose.Schema({
     }],
 
     money: {
-        type:Number
+        type:Number,
+        required: true
     }
 });
 

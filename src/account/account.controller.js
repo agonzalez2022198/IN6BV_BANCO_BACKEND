@@ -2,13 +2,14 @@ import Account from './account.model.js';
 
 export const createAccount = async (req, res) => {
     try {
-        const { accountNumber, user, typeAccount, favoriteAccount } = req.body;
+        const { accountNumber, user, typeAccount, favoriteAccount, money } = req.body;
 
         const newAccount = new Account({
             accountNumber,
             user,
             typeAccount,
-            favoriteAccount
+            favoriteAccount,
+            money
         });
 
         await newAccount.save();

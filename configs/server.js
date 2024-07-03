@@ -18,6 +18,7 @@ class Server {
 
         this.userPath = '/bank/v1/user';
         this.authPath = '/bank/v1/auth';
+
         this.accountPath = '/bank/v1/account';
 
         this.upload = multer({ dest: 'uploads/' })

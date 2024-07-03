@@ -8,6 +8,7 @@ import multer from 'multer';
 import userRoutes from '../src/user/user.routes.js';
 import User from "../src/user/user.model.js";
 import authRoutes from '../src/auth/auth.routes.js';
+import accountRoutes from '../src/account/account.routes.js';
 
 
 class Server {
@@ -16,7 +17,8 @@ class Server {
         this.port = process.env.PORT;
 
         this.userPath = '/bank/v1/user';
-        this.authPath = '/kinalbank/v1/auth';
+        this.authPath = '/bank/v1/auth';
+        this.accountPath = '/bank/v1/account';
 
         this.upload = multer({ dest: 'uploads/' })
 
@@ -67,6 +69,7 @@ class Server {
     routes() {
         this.app.use(this.userPath, userRoutes);
         this.app.use(this.authPath, authRoutes);
+        this.app.use(this.accountPath, accountRoutes);
     }
 
 

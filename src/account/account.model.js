@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { generateAccountNumber } from "../middlewares/numberAccount.js";
+//import { generateAccountNumber } from "../middlewares/numberAccount.js";
 
 const AccountSchema = new mongoose.Schema({
     accountNumber: {
@@ -13,17 +13,21 @@ const AccountSchema = new mongoose.Schema({
         //required: true
     },
     typeAccount: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'TypeAccount',
+        type: String,
+        required: true
         //required: true
     },
     favoriteAccount: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Account',
-    }]
+    }],
+
+    money: {
+        type:Number
+    }
 });
 
-AccountSchema.pre('save', generateAccountNumber);
+//AccountSchema.pre('save', generateAccountNumber);
 
 AccountSchema.methods.toJSON = function() {
     const { __v, _id, ...account } = this.toObject();

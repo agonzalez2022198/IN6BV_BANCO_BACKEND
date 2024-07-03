@@ -7,7 +7,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Configuración de nodemailer con autenticación estándar
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -16,7 +15,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Función para verificar el correo electrónico utilizando ZeroBounce
 const verifyEmail = async (email) => {
   const apiKey = process.env.ZEROBOUNCE_API_KEY;
   const url = `https://api.zerobounce.net/v2/validate?api_key=${apiKey}&email=${email}`;
@@ -37,18 +35,17 @@ export const postUser = async (req, res) => {
         location, celular, correo, monthlyIncome
     } = req.body;
 
-    // Verificar el correo electrónico
     /*const isEmailValid = await verifyEmail(correo);
     if (!isEmailValid) {
         return res.status(400).json({
             msg: 'Correo electrónico no válido o no existe.'
         });
     }*/
+    
 
     let uniqueCode;
     let codeExists = true;
 
-    // Generar un código de 4 dígitos y verificar que no exista
     while (codeExists) {
         uniqueCode = Math.floor(1000 + Math.random() * 9000); // Genera un código de 4 dígitos
         const existingUser = await User.findOne({ code: uniqueCode });
@@ -67,7 +64,6 @@ export const postUser = async (req, res) => {
 
     await user.save();
 
-    // Enviar correo electrónico con los datos de la cuenta
     const mailOptions = {
         from: process.env.EMAIL,
         to: correo,

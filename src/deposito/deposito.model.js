@@ -27,6 +27,11 @@ const DepositoSchema = new mongoose.Schema({
         type: Number,
         ref: 'User',
         required: true
+    },
+
+    comment: {
+        type: String,
+        required: true
     }
 });
 

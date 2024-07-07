@@ -2,31 +2,29 @@ import Deposito from '../deposito/deposito.model.js';
 import Account from '../account/account.model.js';
 
 export const createDeposito = async (req, res) => {
-    const { accountt, accountRecibet, monto } = req.body;
+    const { accountt, accountRecibet, monto, comment } = req.body;
 
     try {
         if (monto > 3000) {
             return res.status(400).json({ error: 'La cantidad a transferir no puede ser mayor a 3000.' });
         }
 
-        const accounts = await Account.findOne({accountNumber: accountt});
-        if(!accounts){
+        const accounts = await Account.findOne({ accountNumber: accountt });
+        if (!accounts) {
             return res.status(400).json({ error: 'Esa cuenta no existe' });
         }
-        const accountRecibs = await Account.findOne({accountNumber: accountRecibet});
+        const accountRecibs = await Account.findOne({ accountNumber: accountRecibet });
 
         if (!accountRecibs) {
             return res.status(404).json({ error: 'Cuenta no encontrada.' });
         }
-
-
 
         if (accounts.money < monto) {
             return res.status(400).json({ error: 'Saldo insuficiente para realizar la transferencia.' });
         }
 
         accounts.money -= monto;
-        accountRecibs.money += monto;
+        accountRecibs.money = Number(accountRecibs.money) + Number(monto)
 
         const idUser = accounts.user;
 
@@ -36,6 +34,7 @@ export const createDeposito = async (req, res) => {
         const deposito = new Deposito({
             account: accountt,
             monto,
+            comment,
             idUser,
             accountRecibe: accountRecibet
         });

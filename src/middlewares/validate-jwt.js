@@ -14,8 +14,11 @@ export const validarJWT = (req, res, next) => {
         // Verificar y decodificar el token
         const decoded = jwt.verify(token, process.env.TOKEN_KEY);
         
-        // Almacenar la información del usuario en req.user
-        req.user = decoded;
+        // Almacenar el ID del usuario en req.user
+        req.user = { id: decoded.uid }; // Almacena el ID del usuario desde el token decodificado
+
+        // Puedes almacenar más información del usuario si es necesario, dependiendo de lo que contenga el token
+        
     } catch (e) {
         console.error('Invalid Token:', e);
         return res.status(401).send('Invalid Token');

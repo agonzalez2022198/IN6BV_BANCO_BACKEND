@@ -18,3 +18,19 @@ export const createAccount = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+export const userAccount = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        console.log("userId:", userId); 
+
+        const account = await Account.find({ user: userId }).populate('user', 'name');
+        if (!account) {
+            return res.status(404).json({ msg: 'No se encontró cuenta de banco para este usuario' });
+        }
+        res.status(200).json(account);
+    } catch (error) {
+        console.error('Error al recuperar la cuenta bancaria:', error);
+        res.status(500).send('Error al recuperar la cuenta bancaria');
+    }
+};

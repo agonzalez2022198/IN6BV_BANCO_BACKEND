@@ -34,3 +34,16 @@ export const userAccount = async (req, res) => {
         res.status(500).send('Error al recuperar la cuenta bancaria');
     }
 };
+
+export const getAccount = async (req, res) =>{
+    try {
+        const accounts = await Account.find({}).populate('user', 'name'); 
+    
+        res.json(accounts);
+      } catch (err) {
+        res.status(500).json({ message: err.message });
+      }
+}
+
+
+
